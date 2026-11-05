@@ -67,9 +67,46 @@
         height: 100%;
         display: block;
       }
-    </style>
+    		#pw-gate {
+			position: fixed; inset: 0; z-index: 9999; background: #fff;
+			display: flex; align-items: center; justify-content: center;
+		}
+		#pw-gate.hidden { display: none; }
+		#pw-gate form { display: flex; flex-direction: column; gap: 0.6rem; width: min(280px, 90vw); }
+		#pw-gate input {
+			font: 1rem sans-serif; padding: 0.6rem 0.8rem;
+			border: 1px solid #ccc; border-radius: 6px; outline: none;
+		}
+		#pw-gate input:focus { border-color: #111; }
+		#pw-gate .error { color: #c00; font: 0.85rem sans-serif; visibility: hidden; }
+		#pw-gate .error.show { visibility: visible; }
+</style>
   </head>
   <body>
+	<div id="pw-gate">
+		<form id="pw-form">
+			<input type="password" id="pw-input" placeholder="Password" aria-label="Password" autofocus />
+			<div class="error" id="pw-error">Incorrect password</div>
+		</form>
+	</div>
+	<script>
+		(function () {
+			var gate = document.getElementById('pw-gate');
+			if (localStorage.getItem('pw-ok') === '1') { gate.classList.add('hidden'); return; }
+			document.getElementById('pw-form').addEventListener('submit', function (e) {
+				e.preventDefault();
+				var input = document.getElementById('pw-input');
+				if (input.value === 'avalon') {
+					localStorage.setItem('pw-ok', '1');
+					gate.classList.add('hidden');
+				} else {
+					document.getElementById('pw-error').classList.add('show');
+					input.value = '';
+					input.focus();
+				}
+			});
+		})();
+	</script>
     <div id="loading">
       <div id="music-choice">
         <div>Download options</div>
